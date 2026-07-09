@@ -1,0 +1,59 @@
+schema_version: 1
+id: market-regime-daily
+display_name: Daily Market Regime Check
+cadence: daily
+estimated_minutes: 5
+target_users: [swing_trader, portfolio_manager]
+difficulty: beginner
+api_profile: no-api-basic
+when_to_run: Before the US equity market open, or after the prior close.
+when_not_to_run: During high-volatility news events where price action is likely to invalidate the snapshot quickly.
+required_skills: [kimi-trading-skills]
+optional_skills: []
+artifacts:
+  - id: regime_report
+    produced_by_step: 3
+    required: true
+    downstream_hints: [swing-opportunity-daily]
+steps:
+  - step: 1
+    name: Fetch breadth data
+    skill: kimi-trading-skills
+    optional: false
+    consumes: []
+    produces: []
+    decision_gate: false
+    depends_on: []
+    cli: uv run tscli market breadth --output-dir reports/
+  - step: 2
+    name: Fetch trend and top signals
+    skill: kimi-trading-skills
+    optional: false
+    consumes: []
+    produces: []
+    decision_gate: false
+    depends_on: []
+    cli: uv run tscli market regime --output-dir reports/
+  - step: 3
+    name: Synthesize regime posture
+    skill: kimi-trading-skills
+    optional: false
+    consumes: []
+    produces: [regime_report]
+    decision_gate: false
+    depends_on: [1, 2]
+    cli: uv run tscli llm analyze --prompt skills/kimi-trading-skills/references/prompts/regime-synthesis.md --input-file reports/market_regime_*.json
+  - step: 4
+    name: Exposure decision gate
+    skill: kimi-trading-skills
+    optional: false
+    consumes: [regime_report]
+    produces: []
+    decision_gate: true
+    decision_question: Given the regime posture, what net exposure do you want today? Confirm to continue.
+    depends_on: [3]
+manual_review:
+  - Confirm the regime report is not stale (> 1 hour old).
+  - Verify the breadth CSV downloaded correctly.
+  - Cross-check the LLM posture against your own read of the market.
+journal_destination: kimi-trading-skills

@@ -1,0 +1,79 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://example.com/kimi-trading-skills/thesis.schema.json",
+  "title": "Trade Thesis / Journal Entry",
+  "type": "object",
+  "required": ["thesis_id", "ticker", "created_at", "updated_at", "thesis_type", "status", "thesis_statement", "origin"],
+  "properties": {
+    "thesis_id": { "type": "string", "format": "uuid" },
+    "ticker": { "type": "string" },
+    "created_at": { "type": "string", "format": "date-time" },
+    "updated_at": { "type": "string", "format": "date-time" },
+    "thesis_type": {
+      "type": "string",
+      "enum": ["dividend_income", "growth_momentum", "mean_reversion", "earnings_drift", "pivot_breakout", "other"]
+    },
+    "status": {
+      "type": "string",
+      "enum": ["IDEA", "ENTRY_READY", "ACTIVE", "PARTIALLY_CLOSED", "CLOSED", "INVALIDATED"]
+    },
+    "status_history": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "status": { "type": "string" },
+          "changed_at": { "type": "string", "format": "date-time" },
+          "note": { "type": "string" }
+        }
+      }
+    },
+    "thesis_statement": { "type": "string" },
+    "entry": {
+      "type": "object",
+      "properties": {
+        "target_price": { "type": "number" },
+        "conditions": { "type": "array", "items": { "type": "string" } },
+        "actual_price": { "type": ["number", "null"] },
+        "actual_date": { "type": ["string", "null"], "format": "date" }
+      }
+    },
+    "exit": {
+      "type": "object",
+      "properties": {
+        "stop_loss": { "type": ["number", "null"] },
+        "stop_loss_pct": { "type": ["number", "null"] },
+        "take_profit": { "type": ["number", "null"] },
+        "take_profit_rr": { "type": ["number", "null"] },
+        "time_stop_days": { "type": ["integer", "null"] },
+        "actual_price": { "type": ["number", "null"] },
+        "actual_date": { "type": ["string", "null"], "format": "date" },
+        "exit_reason": { "type": ["string", "null"] }
+      }
+    },
+    "position": {
+      "type": "object",
+      "properties": {
+        "shares": { "type": ["integer", "null"] },
+        "shares_remaining": { "type": ["integer", "null"] },
+        "position_value": { "type": ["number", "null"] },
+        "risk_dollars": { "type": ["number", "null"] },
+        "risk_pct_of_account": { "type": ["number", "null"] },
+        "account_type": { "type": ["string", "null"] },
+        "sizing_method": { "type": ["string", "null"] },
+        "raw_source": { "type": ["string", "null"] }
+      }
+    },
+    "origin": {
+      "type": "object",
+      "required": ["skill"],
+      "properties": {
+        "skill": { "type": "string" },
+        "output_file": { "type": ["string", "null"] },
+        "screening_grade": { "type": ["string", "null"] },
+        "screening_score": { "type": ["number", "null"] },
+        "raw_provenance": { "type": ["string", "null"] }
+      }
+    }
+  }
+}
