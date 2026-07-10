@@ -42,17 +42,25 @@ Inside a Kimi session you can ask things like:
 
 - "Run a daily market regime check."
 - "Check my broker connection in manual mode."
-- "Screen for momentum burst candidates."
+- "Show my positions."
 
 Those requests map to `tscli` commands the agent executes:
 
 ```bash
 uv run tscli broker check --broker manual --output-dir reports/
 uv run tscli market regime --output-dir reports/
-uv run tscli screen momentum --universe sp500 --output-dir reports/
+uv run tscli broker positions --broker manual --output-dir reports/
 ```
 
+Additional commands such as `screen momentum`, `portfolio analyze`, and `trade plan` are on the roadmap.
+
 Every command writes timestamped JSON and Markdown reports under `reports/`.
+
+## Documentation
+
+- **User docs:** `docs/user/README.md`
+- **Getting started:** `docs/user/getting-started.md`
+- **Design spec:** `docs/superpowers/specs/2026-07-09-kimi-trading-skills-design.md`
 
 ## Project layout
 
@@ -60,6 +68,7 @@ Every command writes timestamped JSON and Markdown reports under `reports/`.
 .
 ├── src/tscli/              # Python CLI implementation
 ├── skills/kimi-trading-skills/   # Kimi skill file + references + workflows
+├── docs/user/                    # User documentation
 ├── docs/superpowers/specs/       # Design specification
 ├── docs/superpowers/plans/       # Implementation plans
 ├── pyproject.toml
